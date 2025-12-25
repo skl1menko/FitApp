@@ -30,28 +30,6 @@ class StepsService {
         healthStore.execute(query)
     }
     
-    // Получение шагов за определенный период
-    func getSteps(from startDate: Date, to endDate: Date, completion:  @escaping (Double) -> Void) {
-        guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
-            completion(0)
-            return
-        }
-        
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end:  endDate, options: .strictStartDate)
-        
-        let query = HKStatisticsQuery(quantityType: stepCountType, quantitySamplePredicate:  predicate, options: .cumulativeSum) { _, result, error in
-            
-            guard let result = result, let sum = result.sumQuantity() else {
-                completion(0)
-                return
-            }
-            
-            let steps = sum.doubleValue(for: HKUnit.count())
-            completion(steps)
-        }
-        
-        healthStore.execute(query)
-    }
     
     // Наблюдение за изменениями шагов
     func observeStepCount(completion: @escaping () -> Void) {
