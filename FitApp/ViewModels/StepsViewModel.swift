@@ -15,12 +15,7 @@ class StepsViewModel: ObservableObject {
     
     private let healthKitManager = HealthKitManager.shared
     private let stepsService = StepsService()
-    
-    // Инициализация и запрос разрешений
-    init() {
-        observeStepChanges()
-    }
-  
+   
     // Загрузка шагов
     func loadSteps() {
         isLoading = true
@@ -33,11 +28,5 @@ class StepsViewModel: ObservableObject {
         }
     }
     
-    // Наблюдение за изменениями шагов
-    private func observeStepChanges() {
-        stepsService.observeStepCount { [weak self] in
-            self?.loadSteps()
-        }
-    }
     
 }
