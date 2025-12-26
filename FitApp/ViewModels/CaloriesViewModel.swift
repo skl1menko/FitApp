@@ -26,10 +26,4 @@ class CaloriesViewModel: ObservableObject {
             }
         }
     }
-    
-    
-    // Обновление данных (для кнопки)
-    func refresh() {
-        loadCalories()
-    }
 }

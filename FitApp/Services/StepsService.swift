@@ -30,20 +30,4 @@ class StepsService {
         healthStore.execute(query)
     }
     
-    
-    // Наблюдение за изменениями шагов
-    func observeStepCount(completion: @escaping () -> Void) {
-        guard let stepCountType = HKObjectType.quantityType(forIdentifier: .stepCount) else {
-            return
-        }
-        
-        let query = HKObserverQuery(sampleType: stepCountType, predicate: nil) { _, _, error in
-            if error == nil {
-                completion()
-            }
-        }
-        
-        healthStore.execute(query)
-        healthStore.enableBackgroundDelivery(for: stepCountType, frequency: .immediate) { _, _ in }
-    }
 }

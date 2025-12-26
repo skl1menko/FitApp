@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var stepsViewModel = StepsViewModel()
     @StateObject private var caloriesViewModel = CaloriesViewModel()
+    @StateObject private var heartViewModel =  HeartViewModel()
     @State private var viewModel: ViewModel?
     
     
@@ -27,7 +28,7 @@ struct ContentView: View {
                     HStack(spacing: 15) {
                         StepsCard(stepCount: stepsViewModel.stepCount, isLoading: stepsViewModel.isLoading)
                             .frame(width: 170, height: 170)
-                        StepsCard(stepCount: stepsViewModel.stepCount, isLoading: stepsViewModel.isLoading)
+                        HeartCard(heartRate: heartViewModel.heartRate, isLoading: heartViewModel.isLoading)
                             . frame(width: 170, height: 170)
                     }
                     

@@ -33,7 +33,7 @@ struct StepsCard: View {
                             .transition(.scale)
                             .minimumScaleFactor(0.5)
                         
-                        Text("шагов")
+                        Text("Steps")
                             .font(.system(size: geometry.size.height * 0.12, weight: . medium))
                             .foregroundColor(.secondary)
                     }

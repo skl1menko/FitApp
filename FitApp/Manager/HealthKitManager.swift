@@ -24,13 +24,14 @@ class HealthKitManager {
     func requestAuthorization(completion: @escaping (Bool, Error?) -> Void) {
         guard
             let stepCount = HKObjectType.quantityType(forIdentifier: .stepCount),
-            let caloriesBurned = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
+            let caloriesBurned = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned),
+            let heartRate = HKObjectType.quantityType(forIdentifier: .heartRate)
         else {
             completion(false, nil)
             return
         }
         
-        let typesToRead:  Set<HKObjectType> = [stepCount,caloriesBurned]
+        let typesToRead:  Set<HKObjectType> = [stepCount,caloriesBurned, heartRate]
         
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
             completion(success, error)
