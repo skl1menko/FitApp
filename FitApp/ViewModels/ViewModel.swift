@@ -15,7 +15,7 @@ class ViewModel: ObservableObject {
     
     private var stepsViewModel: StepsViewModel
     private var caloriesViewModel: CaloriesViewModel
-    private var heartViewModels: HeartViewModel
+    private var heartViewModel: HeartViewModel
     private let healthKitManager = HealthKitManager.shared
     
     
@@ -23,16 +23,16 @@ class ViewModel: ObservableObject {
     @Published var showError: Bool = false
     @Published var errorMessage: String = ""
     
-    init(stepsViewModel: StepsViewModel, caloriesViewModel: CaloriesViewModel) {
+    init(stepsViewModel: StepsViewModel, caloriesViewModel: CaloriesViewModel, heartViewModel: HeartViewModel) {
         self.stepsViewModel = stepsViewModel
         self.caloriesViewModel = caloriesViewModel
-        self.heartViewModels = HeartViewModel()
+        self.heartViewModel = heartViewModel
     }
     
     func refresh(){
         stepsViewModel.loadSteps()
         caloriesViewModel.loadCalories()
-        heartViewModels.loadHeartRate()
+        heartViewModel.loadHeartRate()
     }
     
     private func requestHealthKitPermission() {
@@ -48,7 +48,7 @@ class ViewModel: ObservableObject {
                     self?.isAuthorized = true
                     self?.stepsViewModel.loadSteps()
                     self?.caloriesViewModel.loadCalories()
-                    self?.heartViewModels.loadHeartRate()
+                    self?.heartViewModel.loadHeartRate()
                 } else {
                     self?.errorMessage = "Не удалось получить разрешение на доступ к HealthKit"
                     self?.showError = true

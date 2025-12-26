@@ -47,7 +47,7 @@ struct ContentView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = ViewModel(stepsViewModel: stepsViewModel, caloriesViewModel: caloriesViewModel)
+                viewModel = ViewModel(stepsViewModel: stepsViewModel, caloriesViewModel: caloriesViewModel, heartViewModel: heartViewModel)
                 viewModel?.initialize()
             }
         }
