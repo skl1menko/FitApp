@@ -6,15 +6,16 @@ class StepsService {
     private let healthStore = HKHealthStore()
     
     // Получение количества шагов за сегодня
-    func getTodaySteps(completion: @escaping (Double) -> Void) {
+    func getSteps(for date: Date, completion: @escaping (Double) -> Void) {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             completion(0)
             return
         }
         
-        let now = Date()
-        let startOfDay = Calendar.current.startOfDay(for: now)
-        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: . strictStartDate)
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: endOfDay, options: . strictStartDate)
+      
         
         let query = HKStatisticsQuery(quantityType: stepCountType, quantitySamplePredicate: predicate, options: . cumulativeSum) { _, result, error in
             

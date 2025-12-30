@@ -17,10 +17,10 @@ class StepsViewModel: ObservableObject {
     private let stepsService = StepsService()
    
     // Загрузка шагов
-    func loadSteps() {
+    func loadSteps(for date: Date = Date()) {
         isLoading = true
         
-        stepsService.getTodaySteps { [weak self] steps in
+        stepsService.getSteps(for: date) { [weak self] steps in
             DispatchQueue.main.async {
                 self?.stepCount = Int(steps)
                 self?.isLoading = false

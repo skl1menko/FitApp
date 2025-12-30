@@ -14,10 +14,10 @@ class HeartViewModel: ObservableObject {
     private let healthKitManager = HealthKitManager.shared
     private let heartService = HeartrateService()
     
-    func loadHeartRate() {
+    func loadHeartRate(for date: Date = Date()) {
         isLoading = true
         
-        heartService.getTodayHeartrate{ [weak self] heartRate in
+        heartService.getHeartrate(for: date){ [weak self] heartRate in
             DispatchQueue.main.async {
                 self?.heartRate = Int(heartRate)
                 self?.isLoading = false
