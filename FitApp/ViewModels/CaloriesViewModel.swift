@@ -17,9 +17,9 @@ class CaloriesViewModel: ObservableObject {
     private let caloriesService = CaloriesService()
     
     //Завантаження калорій
-    func loadCalories() {
+    func loadCalories(for date: Date = Date()) {
         isLoading = true
-        caloriesService.getTodayCalories { [weak self] calories in
+        caloriesService.getCalories(for: date) { [weak self] calories in
             DispatchQueue.main.async {
                 self?.caloriesCount = Int(calories)
                 self?.isLoading = false

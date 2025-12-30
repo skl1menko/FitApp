@@ -57,6 +57,12 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func loadData(for date: Date = Date()) {
+        stepsViewModel.loadSteps(for:date)
+        caloriesViewModel.loadCalories(for:date)
+        heartViewModel.loadHeartRate(for:date)
+    }
+    
     func initialize() {
         requestHealthKitPermission()
     }
