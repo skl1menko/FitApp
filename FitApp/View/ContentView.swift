@@ -4,6 +4,7 @@ struct ContentView: View {
     @StateObject private var stepsViewModel = StepsViewModel()
     @StateObject private var caloriesViewModel = CaloriesViewModel()
     @StateObject private var heartViewModel =  HeartViewModel()
+    @StateObject private var workoutViewModel = WorkoutViewModel()
     @State private var viewModel: ViewModel?
     @State private var selectedDate = Date()
     
@@ -47,6 +48,10 @@ struct ContentView: View {
                     CaloriesCard(caloriesCount: caloriesViewModel.caloriesCount, isLoading: caloriesViewModel.isLoading)
                         .frame(width: 355, height: 170)
                     
+                    // Третья строка - карточка тренировок
+                    WorkoutCard(workouts: workoutViewModel.workouts, totalDuration: workoutViewModel.totalDuration, totalCalories: workoutViewModel.totalCalories, isLoading: workoutViewModel.isLoading)
+                        .frame(width: 355, height: 170)
+                    
                     // Кнопка обновления
                     if let viewModel = viewModel {
                         RefreshButton(action: viewModel.refresh)
@@ -58,7 +63,7 @@ struct ContentView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = ViewModel(stepsViewModel: stepsViewModel, caloriesViewModel: caloriesViewModel, heartViewModel: heartViewModel)
+                viewModel = ViewModel(stepsViewModel: stepsViewModel, caloriesViewModel: caloriesViewModel, heartViewModel: heartViewModel, workoutViewModel: workoutViewModel)
                 viewModel?.initialize()
             }
         }

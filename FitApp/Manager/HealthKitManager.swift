@@ -31,7 +31,9 @@ class HealthKitManager {
             return
         }
         
-        let typesToRead:  Set<HKObjectType> = [stepCount,caloriesBurned, heartRate]
+        let workoutType = HKObjectType.workoutType()
+        
+        let typesToRead:  Set<HKObjectType> = [stepCount, caloriesBurned, heartRate, workoutType]
         
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
             completion(success, error)
