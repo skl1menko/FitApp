@@ -10,9 +10,22 @@
 		921690422EFDE585003A2C09 /* FitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9276F7562F28DE9B003F4192 /* Exceptions for "FitApp" folder in "FitApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 921690412EFDE585003A2C09 /* FitApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		921690442EFDE585003A2C09 /* FitApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9276F7562F28DE9B003F4192 /* Exceptions for "FitApp" folder in "FitApp" target */,
+			);
 			path = FitApp;
 			sourceTree = "<group>";
 		};
@@ -257,6 +270,7 @@
 				DEVELOPMENT_TEAM = 72V8BC45X2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitApp/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Это приложение использует HealthKit для отображения ваших шагов";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Это приложение использует HealthKit для доступа к данным о шагах";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -292,6 +306,7 @@
 				DEVELOPMENT_TEAM = 72V8BC45X2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitApp/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Это приложение использует HealthKit для отображения ваших шагов";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Это приложение использует HealthKit для доступа к данным о шагах";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
