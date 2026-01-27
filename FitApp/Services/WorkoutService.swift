@@ -21,7 +21,11 @@ class WorkoutService {
                 return
             }
             
-            completion(workouts)
+            let appleWatchWorkouts = workouts.filter { workout in
+                workout.sourceRevision.productType?.contains("Watch") ?? false
+            }
+            
+            completion(appleWatchWorkouts)
         }
         
         healthStore.execute(query)
