@@ -55,7 +55,14 @@ class NetworkManager {
         if let body = body {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
+            // Убрали .iso8601 чтобы использовать кастомную кодировку дат
             request.httpBody = try encoder.encode(body)
+            
+            #if DEBUG
+            if let jsonString = String(data: request.httpBody!, encoding: .utf8) {
+                print("📤 JSON Body: \(jsonString)")
+            }
+            #endif
         }
         
         #if DEBUG

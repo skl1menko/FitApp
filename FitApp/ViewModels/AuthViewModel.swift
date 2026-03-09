@@ -66,8 +66,10 @@ class AuthViewModel: ObservableObject {
     
     // Выход
     func logout() {
-        authService.logout()
-        currentUser = nil
-        isAuthenticated = false
+        Task { @MainActor in
+            authService.logout()
+            currentUser = nil
+            isAuthenticated = false
+        }
     }
 }
