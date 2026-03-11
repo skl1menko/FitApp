@@ -6,6 +6,8 @@ struct WorkoutCard: View {
     let totalDuration: TimeInterval
     let totalCalories: Double
     let isLoading: Bool
+    let syncViewModel: SyncViewModel
+    let date: Date
     @State private var showDetails = false
     
     var workoutCount: Int {
@@ -67,12 +69,10 @@ struct WorkoutCard: View {
         }
         .animation(.spring(), value: workoutCount)
         .onTapGesture {
-            if !workouts.isEmpty {
-                showDetails = true
-            }
+            showDetails = true
         }
         .sheet(isPresented: $showDetails) {
-            WorkoutDetailView(workouts: workouts)
+            WorkoutDetailView(workouts: workouts, date: date, syncViewModel: syncViewModel)
         }
     }
     

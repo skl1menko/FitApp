@@ -55,7 +55,7 @@ struct SyncResponse: Decodable {
 }
 
 // Модель тренировки из backend
-struct BackendWorkout: Decodable {
+struct BackendWorkout: Decodable, Identifiable {
     let workoutId: Int
     let workoutName: String?
     let userId: Int
@@ -64,15 +64,51 @@ struct BackendWorkout: Decodable {
     let startTime: String
     let endTime: String?
     let totalTonnage: String?
+    let caloriesBurned: Double?
     
-    var id: Int {
-        return workoutId
+    enum CodingKeys: String, CodingKey {
+        case workoutId, workoutName, userId, programId, programName
+        case startTime, endTime, totalTonnage, caloriesBurned
     }
+    
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        workoutId    = try c.decode(Int.self, forKey: .workoutId)
+        workoutName  = try c.decodeIfPresent(String.self, forKey: .workoutName)
+        userId       = try c.decode(Int.self, forKey: .userId)
+        programId    = try c.decodeIfPresent(Int.self, forKey: .programId)
+        programName  = try c.decodeIfPresent(String.self, forKey: .programName)
+        startTime    = try c.decode(String.self, forKey: .startTime)
+        endTime      = try c.decodeIfPresent(String.self, forKey: .endTime)
+        totalTonnage = try c.decodeIfPresent(String.self, forKey: .totalTonnage)
+        // PostgreSQL NUMERIC приходит как строка или число — обрабатываем оба варианта
+        if let asDouble = try? c.decodeIfPresent(Double.self, forKey: .caloriesBurned) {
+            caloriesBurned = asDouble
+        } else if let asString = try? c.decodeIfPresent(String.self, forKey: .caloriesBurned) {
+            caloriesBurned = Double(asString)
+        } else {
+            caloriesBurned = nil
+        }
+    }
+    
+    var id: Int { workoutId }
     
     var workoutDateTime: Date? {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = formatter.date(from: startTime) { return date }
+        // Fallback без миллисекунд
+        formatter.formatOptions = [.withInternetDateTime]
         return formatter.date(from: startTime)
+    }
+}
+
+// Запрос на обновление калорий тренировки
+struct UpdateWorkoutCaloriesRequest: Encodable {
+    let caloriesBurned: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case caloriesBurned = "calories_burned"
     }
 }
 

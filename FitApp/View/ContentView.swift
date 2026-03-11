@@ -114,7 +114,7 @@ struct ContentView: View {
             CaloriesCard(caloriesCount: caloriesViewModel.caloriesCount, isLoading: caloriesViewModel.isLoading)
                 .frame(width: 395.0, height: 170.0)
             
-            WorkoutCard(workouts: workoutViewModel.workouts, totalDuration: workoutViewModel.totalDuration, totalCalories: workoutViewModel.totalCalories, isLoading: workoutViewModel.isLoading)
+            WorkoutCard(workouts: workoutViewModel.workouts, totalDuration: workoutViewModel.totalDuration, totalCalories: workoutViewModel.totalCalories, isLoading: workoutViewModel.isLoading, syncViewModel: syncViewModel, date: selectedDate)
                 .frame(width: 395.0, height: 170.0)
         }
     }
@@ -134,7 +134,7 @@ struct ContentView: View {
     private var syncButton: some View {
         Button(action: {
             Task {
-                await syncViewModel.syncData(
+                await syncViewModel.syncMetricsOnly(
                     date: selectedDate,
                     steps: Double(stepsViewModel.stepCount),
                     calories: Double(caloriesViewModel.caloriesCount),

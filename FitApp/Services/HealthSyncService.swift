@@ -118,6 +118,12 @@ class HealthSyncService {
                     workoutId: backendWorkout.id,
                     hkWorkout: hkWorkout
                 )
+                // Обновить calories_burned в самой тренировке, если ещё не заданы
+                if backendWorkout.caloriesBurned == nil,
+                   let calories = hkWorkout.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
+                   calories > 0 {
+                    try await updateWorkoutCalories(workoutId: backendWorkout.id, calories: calories)
+                }
                 syncedCount += 1
             } else {
                 print("❌ Пара не знайдена для тренування #\(backendWorkout.id)")
@@ -181,6 +187,41 @@ class HealthSyncService {
         print("✅ Синхронизирована тренировка #\(workoutId)")
     }
     
+    // MARK: - Синхронизация одной тренировки по выбору пользователя
+    func syncSingleWorkout(workoutId: Int, workoutStartTime: Date, for date: Date) async throws {
+        let healthKitWorkouts = try await getHealthKitWorkouts(for: date)
+        
+        guard let hkWorkout = healthKitWorkouts.first(where: {
+            abs($0.startDate.timeIntervalSince(workoutStartTime)) < 1800
+        }) else {
+            throw SyncError.notFound("Не знайдено відповідне тренування в HealthKit (±30 хв)")
+        }
+        
+        try await syncWorkoutWithHKWorkout(workoutId: workoutId, hkWorkout: hkWorkout)
+    }
+    
+    // MARK: - Синхронизация с конкретным выбранным HKWorkout
+    func syncWorkoutWithHKWorkout(workoutId: Int, hkWorkout: HKWorkout) async throws {
+        try await syncWorkoutMetrics(workoutId: workoutId, hkWorkout: hkWorkout)
+        
+        if let calories = hkWorkout.totalEnergyBurned?.doubleValue(for: .kilocalorie()), calories > 0 {
+            try await updateWorkoutCalories(workoutId: workoutId, calories: calories)
+        }
+        print("✅ Тренировка #\(workoutId) синхронизирована с HKWorkout \(hkWorkout.startDate)")
+    }
+    
+    // MARK: - Обновить calories_burned тренировки на бекенде
+    private func updateWorkoutCalories(workoutId: Int, calories: Double) async throws {
+        let request = UpdateWorkoutCaloriesRequest(caloriesBurned: calories)
+        let _: SyncResponse = try await networkManager.request(
+            endpoint: "/workouts/\(workoutId)",
+            method: .put,
+            body: request,
+            requiresAuth: true
+        )
+        print("🔥 Калории (\(Int(calories)) ккал) записаны в тренировку #\(workoutId)")
+    }
+    
     // MARK: - Получить средний пульс за тренировку
     private func getAverageHeartRate(for workout: HKWorkout) async throws -> Double? {
         guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else {
@@ -209,6 +250,16 @@ class HealthSyncService {
             }
             
             healthStore.execute(query)
+        }
+    }
+}
+
+enum SyncError: LocalizedError {
+    case notFound(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .notFound(let message): return message
         }
     }
 }
