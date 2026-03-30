@@ -28,8 +28,6 @@ struct ContentView: View {
                     datePicker
                     
                     metricsCards
-                    
-                    actionButtons
                 }
                 .padding()
             }
@@ -91,15 +89,70 @@ struct ContentView: View {
     }
     
     private var datePicker: some View {
-        DatePicker("Выберите дату", selection: $selectedDate, displayedComponents: .date)
-            .datePickerStyle(CompactDatePickerStyle())
-            .padding()
-            .background(Color.white)
+        HStack(spacing: 10) {
+            DatePicker("Выберите дату", selection: $selectedDate, displayedComponents: .date)
+                .datePickerStyle(CompactDatePickerStyle())
+                .padding()
+                .background(Color.white)
+                .frame(height: 50)
+                .cornerRadius(15)
+                .shadow(radius: 5)
+                .onChange(of: selectedDate) { newDate in
+                    loadData(for: newDate)
+                }
+            
+            // Кнопка обновления
+            Button(action: {
+                viewModel?.refresh()
+            }) {
+                Image(systemName: "arrow.clockwise")
+                    .font(.system(size: 20))
+                    .foregroundColor(.white)
+                    .frame(width: 50, height: 50)
+            }
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
             .cornerRadius(15)
             .shadow(radius: 5)
-            .onChange(of: selectedDate) { newDate in
-                loadData(for: newDate)
+            
+            // Кнопка синхронизации
+            Button(action: {
+                Task {
+                    await syncViewModel.syncMetricsOnly(
+                        date: selectedDate,
+                        steps: Double(stepsViewModel.stepCount),
+                        calories: Double(caloriesViewModel.caloriesCount),
+                        heartRate: heartViewModel.heartRate > 0 ? Double(heartViewModel.heartRate) : nil
+                    )
+                }
+            }) {
+                if syncViewModel.isSyncing {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .frame(width: 50, height: 50)
+                } else {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .font(.system(size: 20))
+                        .foregroundColor(.white)
+                        .frame(width: 50, height: 50)
+                }
             }
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .cornerRadius(15)
+            .shadow(radius: 5)
+            .disabled(syncViewModel.isSyncing)
+        }
     }
     
     private var metricsCards: some View {
@@ -117,54 +170,6 @@ struct ContentView: View {
             WorkoutCard(workouts: workoutViewModel.workouts, totalDuration: workoutViewModel.totalDuration, totalCalories: workoutViewModel.totalCalories, isLoading: workoutViewModel.isLoading, syncViewModel: syncViewModel, date: selectedDate)
                 .frame(width: 395.0, height: 170.0)
         }
-    }
-    
-    private var actionButtons: some View {
-        Group {
-            if let viewModel = viewModel {
-                RefreshButton(action: viewModel.refresh)
-                    .padding(.bottom, 10)
-                
-                syncButton
-                    .padding(.bottom, 20)
-            }
-        }
-    }
-    
-    private var syncButton: some View {
-        Button(action: {
-            Task {
-                await syncViewModel.syncMetricsOnly(
-                    date: selectedDate,
-                    steps: Double(stepsViewModel.stepCount),
-                    calories: Double(caloriesViewModel.caloriesCount),
-                    heartRate: heartViewModel.heartRate > 0 ? Double(heartViewModel.heartRate) : nil
-                )
-            }
-        }) {
-            HStack(spacing: 10) {
-                if syncViewModel.isSyncing {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                } else {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                    Text("Синхронизировать")
-                }
-            }
-            .font(.headline)
-            .foregroundColor(.white)
-            .frame(width: 395.0, height: 50.0)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-            )
-            .cornerRadius(15)
-            .shadow(radius: 5)
-        }
-        .disabled(syncViewModel.isSyncing)
     }
     
     func loadData(for date: Date) {
