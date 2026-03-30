@@ -83,56 +83,7 @@ class HealthSyncService {
         }
     }
     
-    // MARK: - Сопоставить тренировки и синхронизировать
-    func syncWorkouts(for date: Date) async throws -> Int {
-        // 1. Получить тренировки из backend
-        let backendWorkouts = try await getBackendWorkouts(for: date)
-        print("📊 Backend тренировок: \(backendWorkouts.count)")
-        
-        // 2. Получить тренировки из HealthKit
-        let healthKitWorkouts = try await getHealthKitWorkouts(for: date)
-        print("📊 HealthKit тренировок: \(healthKitWorkouts.count)")
-        
-        var syncedCount = 0
-        
-        // 3. Для каждой тренировки из backend найти соответствующую в HealthKit
-        for backendWorkout in backendWorkouts {
-            guard let backendDate = backendWorkout.workoutDateTime else {
-                print("⚠️ Backend тренування #\(backendWorkout.id) - не вдалося розпарсити дату")
-                continue
-            }
-            
-            print("🔍 Шукаємо пару для тренування #\(backendWorkout.id) (backend: \(backendDate))")
-            
-            // Найти тренировку в HealthKit по времени (в пределах ±30 минут)
-            let matchedWorkout = healthKitWorkouts.first { hkWorkout in
-                let timeDifference = abs(hkWorkout.startDate.timeIntervalSince(backendDate))
-                print("   ⏱ HealthKit: \(hkWorkout.startDate), різниця: \(Int(timeDifference))s")
-                return timeDifference < 1800 // 30 минут
-            }
-            
-            if let hkWorkout = matchedWorkout {
-                print("✅ Знайдено пару! Синхронізуємо тренування #\(backendWorkout.id)")
-                // Синхронизировать метрики тренировки
-                try await syncWorkoutMetrics(
-                    workoutId: backendWorkout.id,
-                    hkWorkout: hkWorkout
-                )
-                // Обновить calories_burned в самой тренировке, если ещё не заданы
-                if backendWorkout.caloriesBurned == nil,
-                   let calories = hkWorkout.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
-                   calories > 0 {
-                    try await updateWorkoutCalories(workoutId: backendWorkout.id, calories: calories)
-                }
-                syncedCount += 1
-            } else {
-                print("❌ Пара не знайдена для тренування #\(backendWorkout.id)")
-            }
-        }
-        
-        print("📈 Всього синхронізовано: \(syncedCount) з \(backendWorkouts.count)")
-        return syncedCount
-    }
+  
     
     // MARK: - Синхронизация метрик конкретной тренировки
     private func syncWorkoutMetrics(workoutId: Int, hkWorkout: HKWorkout) async throws {
