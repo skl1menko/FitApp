@@ -29,7 +29,7 @@ class SyncViewModel: ObservableObject {
     func syncMetricsOnly(date: Date, steps: Double, calories: Double, heartRate: Double?) async {
         await MainActor.run {
             isSyncing = true
-            syncMessage = "Синхронизация метрик..."
+            syncMessage = "Syncing metrics..."
         }
         
         do {
@@ -42,7 +42,7 @@ class SyncViewModel: ObservableObject {
             
             await MainActor.run {
                 isSyncing = false
-                syncMessage = "Метрики синхронизированы!"
+            syncMessage = "Metrics synchronized!"
                 showSuccess = true
             }
             
@@ -55,7 +55,7 @@ class SyncViewModel: ObservableObject {
         } catch {
             await MainActor.run {
                 isSyncing = false
-                syncMessage = "Ошибка: \(error.localizedDescription)"
+            syncMessage = "Error: \(error.localizedDescription)"
                 showError = true
             }
         }
@@ -67,18 +67,18 @@ class SyncViewModel: ObservableObject {
         
         do {
             let workouts = try await syncService.getBackendWorkouts(for: date)
-            print("📦 Загружено тренировок с бекенда: \(workouts.count)")
+            print("📦 Loaded backend workouts: \(workouts.count)")
             await MainActor.run {
                 backendWorkouts = workouts
-                // Только сессионные синхронизации — не помечаем уже имеющиеся как "синхронизированные"
+                // Only session syncs — don't mark existing ones as synchronized
                 isLoadingWorkouts = false
             }
         } catch {
-            print("❌ Ошибка загрузки тренировок: \(error)")
+            print("❌ Error loading workouts: \(error)")
             await MainActor.run {
                 backendWorkouts = []
                 isLoadingWorkouts = false
-                workoutSyncError = "Ошибка загрузки: \(error.localizedDescription)"
+                workoutSyncError = "Loading error: \(error.localizedDescription)"
             }
         }
     }

@@ -39,15 +39,15 @@ struct AppleHealthWorkout: Identifiable {
         let minutes = Int(duration) / 60 % 60
         
         if hours > 0 {
-            return "\(hours)ч \(minutes)мин"
+            return "\(hours)h \(minutes)min"
         } else {
-            return "\(minutes)мин"
+            return "\(minutes)min"
         }
     }
     
     var formattedCalories: String? {
         guard let calories = calories else { return nil }
-        return "\(Int(calories)) ккал"
+        return "\(Int(calories)) kcal"
     }
 }
 
@@ -55,29 +55,29 @@ struct AppleHealthWorkout: Identifiable {
 extension HKWorkoutActivityType {
     var name: String {
         switch self {
-        case .running: return "Бег"
-        case .cycling: return "Велоспорт"
-        case .walking: return "Ходьба"
-        case .swimming: return "Плавание"
-        case .yoga: return "Йога"
-        case .functionalStrengthTraining: return "Силовая тренировка"
-        case .traditionalStrengthTraining: return "Силовая тренировка"
-        case .crossTraining: return "Кросс-тренинг"
-        case .hiking: return "Пеший туризм"
-        case .elliptical: return "Эллиптический тренажер"
-        case .rowing: return "Гребля"
-        case .stairClimbing: return "Подъем по лестнице"
-        case .dance: return "Танцы"
-        case .basketball: return "Баскетбол"
-        case .soccer: return "Футбол"
-        case .tennis: return "Теннис"
-        case .boxing: return "Бокс"
-        case .martialArts: return "Боевые искусства"
-        case .climbing: return "Скалолазание"
-        case .downhillSkiing: return "Лыжи"
-        case .snowboarding: return "Сноуборд"
-        case .other: return "Другое"
-        default: return "Тренировка"
+        case .running: return "Running"
+        case .cycling: return "Cycling"
+        case .walking: return "Walking"
+        case .swimming: return "Swimming"
+        case .yoga: return "Yoga"
+        case .functionalStrengthTraining: return "Functional Strength Training"
+        case .traditionalStrengthTraining: return "Strength Training"
+        case .crossTraining: return "Cross Training"
+        case .hiking: return "Hiking"
+        case .elliptical: return "Elliptical"
+        case .rowing: return "Rowing"
+        case .stairClimbing: return "Stair Climbing"
+        case .dance: return "Dance"
+        case .basketball: return "Basketball"
+        case .soccer: return "Soccer"
+        case .tennis: return "Tennis"
+        case .boxing: return "Boxing"
+        case .martialArts: return "Martial Arts"
+        case .climbing: return "Climbing"
+        case .downhillSkiing: return "Downhill Skiing"
+        case .snowboarding: return "Snowboarding"
+        case .other: return "Other"
+        default: return "Workout"
         }
     }
 }

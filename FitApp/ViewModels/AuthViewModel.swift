@@ -24,7 +24,7 @@ class AuthViewModel: ObservableObject {
         isAuthenticated = authService.isAuthenticated()
     }
     
-    // Вход
+    // Login
     func login(email: String, password: String) async {
         await MainActor.run { isLoading = true }
         
@@ -43,23 +43,23 @@ class AuthViewModel: ObservableObject {
             }
         } catch {
             await MainActor.run {
-                self.errorMessage = "Неверный email или пароль"
+                self.errorMessage = "Invalid email or password"
                 self.isLoading = false
             }
         }
     }
     
-    // Загрузка профиля
+    // Load profile
     func loadProfile() async {
         do {
             let profile = try await authService.getProfile()
             await MainActor.run {
-                // Обновляем данные пользователя
+                // Update user data
                 print("Profile loaded: \(profile.fullName)")
             }
         } catch {
             await MainActor.run {
-                self.errorMessage = "Не удалось загрузить профиль"
+                self.errorMessage = "Failed to load profile"
             }
         }
     }

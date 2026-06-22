@@ -17,7 +17,7 @@ struct WorkoutSyncView: View {
         NavigationView {
             VStack(spacing: 0) {
                 // Выбор даты
-                DatePicker("Дата тренировки", selection: $viewModel.selectedDate, displayedComponents: .date)
+                DatePicker("Training date", selection: $viewModel.selectedDate, displayedComponents: .date)
                     .datePickerStyle(.compact)
                     .padding()
                     .background(Color(.systemGray6))
@@ -34,11 +34,11 @@ struct WorkoutSyncView: View {
                     date: viewModel.selectedDate
                 )
             }
-            .navigationTitle("Синхронизация тренировки")
+            .navigationTitle("Training synchronization")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Закрыть") {
+                    Button("Close") {
                         dismiss()
                     }
                 }
@@ -69,7 +69,7 @@ struct WorkoutSyncViewContent: View {
         if isLoading {
             VStack {
                 Spacer()
-                ProgressView("Загрузка тренировок...")
+            ProgressView("Loading workouts...")
                     .padding()
                 Spacer()
             }
@@ -85,7 +85,7 @@ struct WorkoutSyncViewContent: View {
                                 .padding(.horizontal)
                             
                             if appleHealthWorkouts.isEmpty {
-                                emptyStateView(text: "Нет тренировок в Apple Health")
+                                emptyStateView(text: "Empty")
                             } else {
                                 ForEach(appleHealthWorkouts, id: \.uuid) { workout in
                                     AppleWorkoutSyncCard(
@@ -106,13 +106,13 @@ struct WorkoutSyncViewContent: View {
                         
                         // Секция Backend
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Backend тренировки")
+                            Text("Backend trainings")
                                 .font(.headline)
                                 .foregroundColor(.primary)
                                 .padding(.horizontal)
                             
                             if backendWorkouts.isEmpty {
-                                emptyStateView(text: "Нет тренировок на сервере")
+                                emptyStateView(text: "Empty")
                             } else {
                                 ForEach(backendWorkouts) { workout in
                                     BackendWorkoutSyncCard(
@@ -164,7 +164,7 @@ struct WorkoutSyncViewContent: View {
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                         } else {
                             Image(systemName: "arrow.triangle.2.circlepath")
-                            Text("Синхронизировать")
+                            Text("Synchronize")
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -186,7 +186,7 @@ struct WorkoutSyncViewContent: View {
     private func syncWorkouts() {
         guard let appleWorkout = selectedAppleWorkout,
               let backendWorkout = selectedBackendWorkout else {
-            errorMessage = "Выберите обе тренировки для синхронизации"
+            errorMessage = "Select both workouts to sync"
             return
         }
         
@@ -201,14 +201,14 @@ struct WorkoutSyncViewContent: View {
                     hkWorkout: appleWorkout
                 )
                 
-                successMessage = "Тренировка успешно синхронизирована!"
+                successMessage = "Workout successfully synchronized!"
                 
-                // Очистить выбор
+                // Clear selection
                 selectedAppleWorkout = nil
                 selectedBackendWorkout = nil
                 
             } catch {
-                errorMessage = "Ошибка синхронизации: \(error.localizedDescription)"
+            errorMessage = "Synchronization error: \(error.localizedDescription)"
             }
             
             isSyncing = false
@@ -248,15 +248,15 @@ struct AppleWorkoutSyncCard: View {
         let minutes = Int(duration) / 60 % 60
         
         if hours > 0 {
-            return "\(hours)ч \(minutes)мин"
+            return "\(hours)h \(minutes)min"
         } else {
-            return "\(minutes)мин"
+            return "\(minutes)min"
         }
     }
     
     private var formattedCalories: String? {
         guard let calories = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) else { return nil }
-        return "\(Int(calories)) ккал"
+        return "\(Int(calories)) kcal"
     }
     
     var body: some View {
@@ -309,7 +309,7 @@ struct BackendWorkoutSyncCard: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(workout.workoutName ?? workout.programName ?? "Тренировка #\(workout.workoutId)")
+                Text(workout.workoutName ?? workout.programName ?? "Workout #\(workout.workoutId)")
                     .font(.headline)
                 
                 HStack(spacing: 16) {
@@ -318,9 +318,9 @@ struct BackendWorkoutSyncCard: View {
                     }
                     
                     if let calories = workout.caloriesBurned {
-                        Label("\(Int(calories)) ккал", systemImage: "flame.fill")
+                    Label("\(Int(calories)) kcal", systemImage: "flame.fill")
                     } else {
-                        Text("Нет данных о калориях")
+                        Text("No calorie data available")
                             .font(.caption2)
                             .foregroundColor(.orange)
                     }

@@ -74,7 +74,7 @@ struct LoginView: View {
                         
                         // Карточка с формой входа
                         VStack(spacing: 18) {
-                            Text("Вход")
+                            Text("Log in")
                                 .font(.system(size: 22, weight: .semibold))
                                 .foregroundColor(.primary)
                             
@@ -106,7 +106,7 @@ struct LoginView: View {
                             
                             // Поле Пароль
                             VStack(alignment: .leading, spacing: 6) {
-                                Label("Пароль", systemImage: "lock.fill")
+                                Label("Password", systemImage: "lock.fill")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                                     .padding(.leading, 5)
@@ -116,7 +116,7 @@ struct LoginView: View {
                                         .foregroundColor(.gray)
                                         .frame(width: 20)
                                     
-                                    SecureField("Введите пароль", text: $password)
+                                    SecureField("Enter password", text: $password)
                                         .textInputAutocapitalization(.never)
                                 }
                                 .padding()
@@ -154,7 +154,7 @@ struct LoginView: View {
                                         ProgressView()
                                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                     } else {
-                                        Text("Войти")
+                                        Text("Log in")
                                             .font(.headline)
                                         Image(systemName: "arrow.right")
                                     }

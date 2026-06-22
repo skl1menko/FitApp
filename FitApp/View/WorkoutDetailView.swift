@@ -24,11 +24,11 @@ struct WorkoutDetailView: View {
                     date: date
                 )
             }
-            .navigationTitle("Синхронизация тренировки")
+            .navigationTitle("Training synchronization")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Готово") { dismiss() }
+                    Button("Ready") { dismiss() }
                 }
             }
         }

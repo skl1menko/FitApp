@@ -38,7 +38,7 @@ struct ContentView: View {
                 viewModel?.initialize()
             }
         }
-        .alert("Ошибка", isPresented: Binding(
+        .alert("Error", isPresented: Binding(
             get: { viewModel?.showError ?? false },
             set: { viewModel?.showError = $0 }
         )) {
@@ -46,12 +46,12 @@ struct ContentView: View {
         } message: {
             Text(viewModel?.errorMessage ?? "")
         }
-        .alert("Успешно", isPresented: $syncViewModel.showSuccess) {
+        .alert("Successfully", isPresented: $syncViewModel.showSuccess) {
             Button("OK", role: .cancel) { }
         } message: {
             Text(syncViewModel.syncMessage ?? "")
         }
-        .alert("Ошибка синхронизации", isPresented: $syncViewModel.showError) {
+        .alert("Synchronization error", isPresented: $syncViewModel.showError) {
             Button("OK", role: .cancel) { }
         } message: {
             Text(syncViewModel.syncMessage ?? "")
@@ -69,7 +69,7 @@ struct ContentView: View {
             }) {
                 HStack {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
-                    Text("Выход")
+                    Text("Exit")
                 }
                 .foregroundColor(.red)
                 .padding(.horizontal, 12)
@@ -83,14 +83,14 @@ struct ContentView: View {
     }
     
     private var titleView: some View {
-        Text("Мои показатели")
+        Text("My indicators")
             .font(.system(size: 28, weight: .bold))
             .foregroundColor(.primary)
     }
     
     private var datePicker: some View {
         HStack(spacing: 10) {
-            DatePicker("Выберите дату", selection: $selectedDate, displayedComponents: .date)
+            DatePicker("Choose date", selection: $selectedDate, displayedComponents: .date)
                 .datePickerStyle(CompactDatePickerStyle())
                 .padding()
                 .background(Color.white)

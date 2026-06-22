@@ -15,7 +15,7 @@ class HealthSyncService {
     
     private init() {}
     
-    // MARK: - Основная синхронизация за день
+    // MARK: - Main daily synchronization
     func syncDayData(date: Date, steps: Double, calories: Double, heartRate: Double?) async throws {
         let startOfDay = Calendar.current.startOfDay(for: date)
         
@@ -39,7 +39,7 @@ class HealthSyncService {
             requiresAuth: true
         )
         
-        print("✅ Синхронизированы дневные данные за \(date)")
+        print("✅ Day data synchronized for \(date)")
     }
     
     // MARK: - Получить тренировки из backend за день
@@ -60,7 +60,7 @@ class HealthSyncService {
         return response.data
     }
     
-    // MARK: - Получить тренировки из HealthKit за день
+    // MARK: - Get HealthKit workouts for the day
     func getHealthKitWorkouts(for date: Date) async throws -> [HKWorkout] {
         let startOfDay = Calendar.current.startOfDay(for: date)
         let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
@@ -85,9 +85,9 @@ class HealthSyncService {
     
   
     
-    // MARK: - Синхронизация метрик конкретной тренировки
+    // MARK: - Sync metrics for a specific workout
     private func syncWorkoutMetrics(workoutId: Int, hkWorkout: HKWorkout) async throws {
-        // Перевірити чи метрики вже існують
+        // Check if metrics already exist
         do {
             struct WorkoutMetricsResponse: Decodable {
                 let status: String
@@ -104,16 +104,16 @@ class HealthSyncService {
                 requiresAuth: true
             )
             
-            // Якщо є метрики - пропускаємо
+            // If metrics exist - skip
             if !response.data.isEmpty {
-                print("⚠️ Метрики для тренування #\(workoutId) вже існують, пропускаємо")
+                print("⚠️ Metrics for workout #\(workoutId) already exist, skipping")
                 return
             }
         } catch {
-            // Помилка або метрик немає - продовжуємо
+            // Error or no metrics - continue
         }
         
-        // Получить данные из HealthKit для этой тренировки
+        // Get data from HealthKit for this workout
         let calories = hkWorkout.totalEnergyBurned?.doubleValue(for: .kilocalorie())
         let heartRate = try? await getAverageHeartRate(for: hkWorkout)
         
@@ -122,7 +122,7 @@ class HealthSyncService {
             periodType: "workout",
             startDate: hkWorkout.startDate,
             endDate: hkWorkout.endDate,
-            stepCount: nil, // для тренировки обычно не нужны шаги
+            stepCount: nil, // steps usually not needed for workouts
             totalEnergyBurned: calories,
             avgHeartRate: heartRate.map { Int(round($0)) },
             sourceName: "Apple Health"
@@ -135,21 +135,10 @@ class HealthSyncService {
             requiresAuth: true
         )
         
-        print("✅ Синхронизирована тренировка #\(workoutId)")
+        print("✅ Workout #\(workoutId) synchronized")
     }
     
-    // MARK: - Синхронизация одной тренировки по выбору пользователя
-    func syncSingleWorkout(workoutId: Int, workoutStartTime: Date, for date: Date) async throws {
-        let healthKitWorkouts = try await getHealthKitWorkouts(for: date)
-        
-        guard let hkWorkout = healthKitWorkouts.first(where: {
-            abs($0.startDate.timeIntervalSince(workoutStartTime)) < 1800
-        }) else {
-            throw SyncError.notFound("Не знайдено відповідне тренування в HealthKit (±30 хв)")
-        }
-        
-        try await syncWorkoutWithHKWorkout(workoutId: workoutId, hkWorkout: hkWorkout)
-    }
+  
     
     // MARK: - Синхронизация с конкретным выбранным HKWorkout
     func syncWorkoutWithHKWorkout(workoutId: Int, hkWorkout: HKWorkout) async throws {
@@ -158,7 +147,7 @@ class HealthSyncService {
         if let calories = hkWorkout.totalEnergyBurned?.doubleValue(for: .kilocalorie()), calories > 0 {
             try await updateWorkoutCalories(workoutId: workoutId, calories: calories)
         }
-        print("✅ Тренировка #\(workoutId) синхронизирована с HKWorkout \(hkWorkout.startDate)")
+        print("✅ Workout #\(workoutId) synchronized with HKWorkout \(hkWorkout.startDate)")
     }
     
     // MARK: - Обновить calories_burned тренировки на бекенде
@@ -170,7 +159,7 @@ class HealthSyncService {
             body: request,
             requiresAuth: true
         )
-        print("🔥 Калории (\(Int(calories)) ккал) записаны в тренировку #\(workoutId)")
+        print("🔥 Calories (\(Int(calories)) kcal) saved to workout #\(workoutId)")
     }
     
     // MARK: - Получить средний пульс за тренировку

@@ -38,7 +38,7 @@ class WorkoutSyncViewModel: ObservableObject {
             backendWorkouts = backend
             
         } catch {
-            errorMessage = "Ошибка загрузки: \(error.localizedDescription)"
+            errorMessage = "Loading error: \(error.localizedDescription)"
         }
         
         isLoading = false
@@ -65,7 +65,7 @@ class WorkoutSyncViewModel: ObservableObject {
     func syncSelectedWorkouts() async {
         guard let appleWorkout = selectedAppleWorkout,
               let backendWorkout = selectedBackendWorkout else {
-            errorMessage = "Выберите обе тренировки для синхронизации"
+            errorMessage = "Select both workouts to sync"
             return
         }
         
@@ -79,17 +79,17 @@ class WorkoutSyncViewModel: ObservableObject {
                 hkWorkout: appleWorkout.hkWorkout
             )
             
-            successMessage = "Тренировка успешно синхронизирована!"
+            successMessage = "Workout successfully synchronized!"
             
-            // Очистить выбор
+            // Clear selection
             selectedAppleWorkout = nil
             selectedBackendWorkout = nil
             
-            // Обновить список backend тренировок
+            // Refresh backend workouts
             await loadWorkouts()
             
         } catch {
-            errorMessage = "Ошибка синхронизации: \(error.localizedDescription)"
+            errorMessage = "Synchronization error: \(error.localizedDescription)"
         }
         
         isLoading = false

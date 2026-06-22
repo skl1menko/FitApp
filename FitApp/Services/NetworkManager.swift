@@ -19,9 +19,9 @@ class NetworkManager {
     static let shared = NetworkManager()
     
     // ЗАМЕНИТЕ НА ВАШ NGROK URL
-    // Например: "https://fatimah-unfrequentable-colby.ngrok-free.dev"
+    //private let baseURL = "https://fitappbackend.onrender.com"
     private let baseURL = "https://fatimah-unfrequentable-colby.ngrok-free.dev"
-    
+
     private var authToken: String? {
         get { UserDefaults.standard.string(forKey: "authToken") }
         set { UserDefaults.standard.set(newValue, forKey: "authToken") }

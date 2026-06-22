@@ -40,7 +40,7 @@ class ViewModel: ObservableObject {
     
     private func requestHealthKitPermission() {
         guard healthKitManager.isHealthKitAvailable() else {
-            errorMessage = "HealthKit недоступен на этом устройстве"
+            errorMessage = "HealthKit is not available on this device"
             showError = true
             return
         }
@@ -54,7 +54,7 @@ class ViewModel: ObservableObject {
                     self?.heartViewModel.loadHeartRate()
                     self?.workoutViewModel.loadWorkouts()
                 } else {
-                    self?.errorMessage = "Не удалось получить разрешение на доступ к HealthKit"
+                    self?.errorMessage = "Failed to get HealthKit permission"
                     self?.showError = true
                 }
             }

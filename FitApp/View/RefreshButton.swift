@@ -13,7 +13,7 @@ struct RefreshButton: View {
         Button(action: action) {
             HStack {
                 Image(systemName:  "arrow.clockwise")
-                Text("Обновить")
+                Text("Update")
             }
             .font(. system(size: 18, weight: .semibold))
             .foregroundColor(.white)
